@@ -2,6 +2,8 @@ name: Release new hpi
 
 on:
   push:
+    paths:
+      - '*.hpi'
     tags:
       - 'v*'
     # branches:
