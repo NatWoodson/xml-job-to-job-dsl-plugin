@@ -31,12 +31,15 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
+    - name: check hpi exist
+      run: |
+        if [[ -f *.hpi ]]; then echo "file exist"; else echo "file does not exist"; exit 1; fi
     - name: Upload hpi asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: .hpi
+        asset_path: *.hpi
         asset_name: xml-job-to-job-dsl.hpi
         asset_content_type: application/java-archive
