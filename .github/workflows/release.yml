@@ -1,8 +1,8 @@
 name: Release Workflows
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    types: [closed]
+    branches: [master]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,8 +13,13 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets. GITHUB_TOKEN }}
+        if: github.event.pull_request.merged == true
         with: 
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: "v${{ steps.create_release.outputs.tag_name }}"
+          release_name: Release v${{ steps.create_release.outputs.tag_name }}""
           draft: false
           prerelease: false
+      - name: Get next version
+        id: get_next_version
+        run: echo "::set-output name-tag_name::$(($(echo ${{ steps.create_release.outputs.tag_name }} | cut -d '." -f2)+1))"
+        
