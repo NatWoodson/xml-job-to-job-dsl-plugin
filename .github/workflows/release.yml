@@ -1,34 +1,40 @@
-name: Release Workflow
+name: Release new hpi
+
 on:
   push:
     branches:
-      - master 
+      - master
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  
 
-    steps:
-    - name : Checkout code
+    steps: 
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Delete existing tag
-      run: |
-        version=$(git describe --tags $(git rev-list --tags --max-count=1))
-        git tag -d v$version
-        git push origin :refs/tags/v$version
-
-    - name: Create release
-      run: |
-        version=$(date "+%Y.%m.%d")
-        git tag v$version
-        git push origin v$version
-    - name: Create a release
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: 11
+    
+    - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v$new_version
-        release_name: Release v$new_version
+        tag_name: ${{ env.TAG_NAME }}
+        release_name: Release ${{ env.TAG_NAME }}
         draft: false
+        prerelease: false
+    
+    - name: Upload hpi asset
+      uses: actions/upload-release-asset@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: target/*.hpi
+        asset_name: my-plugin.hpi
+        asset_content_type: application/java-archive
