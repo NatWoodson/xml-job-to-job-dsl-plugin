@@ -1,35 +1,18 @@
 name: Release new hpi
 
+# Run on every commit tag which begins with "v"
 on:
   push:
     tags:
-      - 'v*'
-    # branches:
-    #   - master
+      - "v*"
 
 jobs:
   release:
     runs-on: ubuntu-latest  
-
     steps: 
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Java
-      uses: actions/setup-java@v3
+    - uses: "marvinpinto/action-automatic-releases@latest"
       with:
-        java-version: '11'
-        distribution: 'temurin'
-    
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ env.TAG_NAME }}
-        release_name: Release ${{ env.TAG_NAME }}
-        draft: false
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
     
     - name: Upload hpi asset
