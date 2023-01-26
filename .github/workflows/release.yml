@@ -19,7 +19,7 @@ jobs:
         git push origin v$version
     - name: Create a release
       id: create_release
-      uses: actions/create-release@v2
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
