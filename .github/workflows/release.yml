@@ -19,30 +19,29 @@ jobs:
         
     - name: Build Maven Project
       run: mvn install -DskipTests
-
-    - name: Get Latest Release Tag
-      id: latest_release
-      run: |
-        release_tag=$(curl --silent https://api.github.com/repos/${{github.repository}}/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-        echo "::set-output name=tag_name::$release_tag"
-
-    - name: Increment Release Tag
-      run: |
-        release_tag=${{ steps.latest_release.outputs.tag_name }}
-        new_tag=$(echo $release_tag | sed -E 's/v([0-9]+)/v$((\1+1))/')
-        echo "::set-output name=new_tag::$new_tag"
-
+      
+    - name: Git Version
+      # You may pin to the exact commit or the version.
+      # uses: codacy/git-version@fa06788276d7492a2af01662649696d249ecf4cb
+      uses: codacy/git-version@2.4.0
+      with:
+        # The name of the release branch
+        release-branch: master
+        dev-branch: ${{ github.ref }}
+        # The prefix to use in the version
+        prefix: Release   
+    
+   
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1.1.4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.increment_release_tag.outputs.new_tag }}
-        release_name:  Release ${{ steps.increment_release_tag.outputs.new_tag }}
+        tag_name: v${{ github.run_number }}
+        release_name:  Release ${{ github.run_number }}
         draft: false
         prerelease: false
-
     - name: Upload hpi asset
       uses: actions/upload-release-asset@v1.0.2
       env:
@@ -52,67 +51,3 @@ jobs:
         asset_path: target/xml-job-to-job-dsl.hpi
         asset_name: xml-job-to-job-dsl.hpi
         asset_content_type: application/octet-stream
-
-
-
-
-
-
-
-
-
-
-
-# name: Release new hpi
-
-# on:
-#   push:
-#     branches: [master]
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest  
-
-#     steps: 
-#     - name: Checkout code
-#       uses: actions/checkout@v2
-
-#     - name: Set up Java
-#       uses: actions/setup-java@v1
-#       with:
-#         java-version: 1.7
-        
-#     - name: Build Maven Project
-#       run: mvn install -DskipTests
-      
-#     - name: Get latest release
-#       id: get_latest_release
-#       uses: actions/get-latest-release@v1
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
-#     - name: Extract release number
-#       run: |
-#         echo "Latest release: ${{ steps.get_latest_release.outputs.tag_name }}"
-#         echo "Latest release number: ${{ steps.get_latest_release.outputs.tag_name | regex_replace('[^0-9]','') }}"
-#         echo "##[set-output name=latest_release_number;]${{ steps.get_latest_release.outputs.tag_name | regex_replace('[^0-9]','') }}"
-   
-#     - name: Create Release
-#       id: create_release
-#       uses: actions/create-release@v1.1.4
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       with:
-#         tag_name: v${{ github.run_number }}
-#         release_name:  Release ${{ github.run_number }}
-#         draft: false
-#         prerelease: false
-#     - name: Upload hpi asset
-#       uses: actions/upload-release-asset@v1.0.2
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       with:
-#         upload_url: ${{ steps.create_release.outputs.upload_url }}
-#         asset_path: target/xml-job-to-job-dsl.hpi
-#         asset_name: xml-job-to-job-dsl.hpi
-#         asset_content_type: application/octet-stream
