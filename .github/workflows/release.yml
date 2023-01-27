@@ -40,9 +40,9 @@ jobs:
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         MAJOR_VERSION: 1
-#         MINOR_VERSION: 0
-#         PATCH_VERSION: 0
+        MAJOR_VERSION: 1
+        MINOR_VERSION: 0
+        PATCH_VERSION: 0
       with:
         tag_name: v${{ steps.increment_version.outputs.version }}
         release_name: Release v${{ steps.increment_version.outputs.version }}
