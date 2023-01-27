@@ -17,16 +17,16 @@ jobs:
       with:
         java-version: 1.7
         
-    - name: Step 3 - Build Maven Project
+    - name: Build Maven Project
       run: mvn install -DskipTests
     
-    - name: Step 4 - List current directory
-      run: ls -a 
+#     - name: Step 4 - List current directory
+#       run: ls -a 
     
-    - name: Step 5 - What is in the target folder?
-      run: |
-        cd target
-        ls -a 
+#     - name: Step 5 - What is in the target folder?
+#       run: |
+#         cd target
+#         ls -a 
    
     - name: Create Release
       id: create_release
