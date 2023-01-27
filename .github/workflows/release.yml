@@ -2,13 +2,10 @@ name: Release new hpi
 
 on:
   push:
-    tags:
-      - 'v*'
-    # branches:
-    #   - master
+    branches: [master]
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest  
 
     steps: 
@@ -18,25 +15,39 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
-        distribution: 'temurin'
+        java-version: 1.7
+        
+    - name: Step 3 - Build Maven Project
+      run: mvn -B package --file pom.xml
     
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-    - name: Upload hpi asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: target/*.hpi
-        asset_name: xml-job-to-job-dsl.hpi
-        asset_content_type: application/java-archive
+    - name: Step 4 - List current directory
+      run: ls -a 
+    
+    - name: Step 5 - What is in the target folder?
+      run: |
+        cd target
+        ls -a 
+        
+        
+        
+        
+    
+#     - name: Create Release
+#       id: create_release
+#       uses: actions/create-release@v1
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       with:
+#         tag_name: ${{ github.ref }}
+#         release_name: Release ${{ github.ref }}
+#         draft: false
+#         prerelease: false
+#     - name: Upload hpi asset
+#       uses: actions/upload-release-asset@v1
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       with:
+#         upload_url: ${{ steps.create_release.outputs.upload_url }}
+#         asset_path: target/*.hpi
+#         asset_name: xml-job-to-job-dsl.hpi
+#         asset_content_type: application/java-archive
