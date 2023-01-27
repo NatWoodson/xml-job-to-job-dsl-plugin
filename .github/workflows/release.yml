@@ -19,6 +19,17 @@ jobs:
         
     - name: Build Maven Project
       run: mvn install -DskipTests
+      
+    - name: Get latest release
+      id: get_latest_release
+      uses: actions/get-latest-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Extract release number
+      run: |
+        echo "Latest release: ${{ steps.get_latest_release.outputs.tag_name }}"
+        echo "Latest release number: ${{ steps.get_latest_release.outputs.tag_name | regex_replace('[^-9],'') }}"
    
     - name: Create Release
       id: create_release
