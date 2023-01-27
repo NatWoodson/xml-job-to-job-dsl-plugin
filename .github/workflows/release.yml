@@ -22,7 +22,7 @@ jobs:
       
     - name: Increment version
       id: increment_version
-      uses: actions/increment-version@v1
+      uses: actions/semantic-release@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
