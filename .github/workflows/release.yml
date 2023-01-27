@@ -18,7 +18,7 @@ jobs:
         java-version: 1.7
         
     - name: Step 3 - Build Maven Project
-      run: mvn -B package --file pom.xml
+      run: mvn mvn install -DskipTests
     
     - name: Step 4 - List current directory
       run: ls -a 
