@@ -19,6 +19,12 @@ jobs:
         
     - name: Build Maven Project
       run: mvn install -DskipTests
+      
+    - name: Install bumpversion
+      run: pip install bumpversion
+
+    - name: Bump version
+      run: bumpversion minor --allow-dirty
     
 #     - name: Step 4 - List current directory
 #       run: ls -a 
@@ -33,12 +39,9 @@ jobs:
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        MAJOR_VERSION: 1
-        MINOR_VERSION: 0
-        PATCH_VERSION: 0
       with:
-        tag_name: v${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}
-        release_name:  Release v${{ env.MAJOR_VERSION }}.${{ env.MINOR_VERSION }}.${{ env.PATCH_VERSION }}
+        tag_name: v$(cat VERSION)
+        release_name:  Release v$(cat VERSION)
         draft: false
         prerelease: false
     - name: Upload hpi asset
